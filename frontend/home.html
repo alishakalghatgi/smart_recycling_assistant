@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Recycle Classifier</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <h1>Recycle Item Classifier</h1>
+    <input id="itemInput" type="text" placeholder="Enter item to classify">
+    <button id="predictBtn">Predict</button>
+    <p id="result"></p>
+
+    <script>
+        // On button click, send POST request to Flask backend
+        document.getElementById('predictBtn').addEventListener('click', () => {
+            const itemText = document.getElementById('itemInput').value;
+            fetch('http://localhost:5000/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ item: itemText })
+            })
+            .then(resp => {
+                if (!resp.ok) throw new Error('Server error: ' + resp.status);
+                return resp.json();
+            })
+            .then(data => {
+                // Display the returned prediction
+                document.getElementById('result').innerText = 'Prediction: ' + data.prediction;
+            })
+            .catch(err => {
+                console.error('Fetch error:', err);
+                document.getElementById('result').innerText = 'Error: ' + err.message;
+            });
+        });
+    </script>
+</body>
+</html>
